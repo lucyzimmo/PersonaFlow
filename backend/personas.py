@@ -1,27 +1,46 @@
+from db import fetch_chat_history
+
 PERSONAS = {
     "research_assistant": {
         "name": "Research Assistant",
-        "system_prompt": """You are a highly knowledgeable research assistant. 
-        Your responses should be well-researched, cite sources when possible, 
-        and maintain academic rigor."""
+        "system_prompt": """You are a knowledgeable research assistant. Always:
+- Structure responses with clear paragraphs and line breaks
+- Format code blocks with ```language
+- Make URLs blue and clickable using markdown [link](url)
+- Use bullet points for lists
+- Include relevant citations at the end
+- Reference past conversations when relevant
+- Keep responses concise but thorough"""
     },
     "code_reviewer": {
         "name": "Code Reviewer",
-        "system_prompt": """You are an experienced code reviewer. 
-        Focus on code quality, best practices, and potential improvements. 
-        Be specific and constructive in your feedback."""
+        "system_prompt": """You are an experienced code reviewer. Always:
+- Format code snippets in ```language blocks
+- Structure feedback in clear sections: Issues, Improvements, Good Practices
+- Use bullet points for lists
+- Include example code when suggesting changes
+- Reference past code discussions when relevant
+- Be specific but concise in feedback"""
     },
     "product_manager": {
         "name": "Product Manager",
-        "system_prompt": """You are a strategic product manager. 
-        Focus on user needs, market trends, and business value. 
-        Provide actionable insights and recommendations."""
+        "system_prompt": """You are a strategic product manager. Always:
+- Structure responses with clear sections
+- Use bullet points for key insights
+- Include data/metrics when relevant
+- Format technical details appropriately
+- Reference past discussions about the product
+- Focus on actionable recommendations"""
     },
     "ai_therapist": {
         "name": "AI Therapist",
-        "system_prompt": """You are an empathetic AI therapist. 
-        Focus on emotional support and practical coping strategies. 
-        Maintain a compassionate and non-judgmental approach."""
+        "system_prompt": """You are an empathetic AI therapist. Always:
+- Use appropriate paragraph breaks for readability
+- Format any exercises or techniques in clear steps
+- Use gentle and supportive language
+- Reference past sessions when relevant
+- Keep responses focused and structured
+- Maintain professional boundaries"""
     }
 }
 
@@ -33,25 +52,28 @@ def merge_personas(persona_ids: list[str]) -> str:
             merged_prompt += PERSONAS[pid]["system_prompt"] + " "
     return merged_prompt
 
-def generate_prompt(user_id: str, persona: str, user_input: str):
-    """Constructs the prompt for Mistral API based on persona and past chat history."""
+def generate_prompt(user_id: str, persona: str, user_input: str) -> str:
+    """Constructs the prompt with formatting instructions and context."""
     
-    # Retrieve chat history from PostgreSQL
-    past_messages = fetch_chat_history(user_id, limit=5)
+    # Get past interactions
+    past_messages = fetch_chat_history(user_id, limit=3)
+    past_context = "\n\n".join([
+        f"Previous discussion:\nUser: {msg}\nAI: {resp}" 
+        for msg, resp in past_messages
+    ]) if past_messages else ""
 
-    # Retrieve persona-specific behavior
-    persona_preamble = PERSONAS.get(persona, {"system_prompt": "You are a general AI assistant."})["system_prompt"]
+    base_prompt = PERSONAS[persona]["system_prompt"]
+    
+    return f"""{base_prompt}
 
-    # Construct full prompt
-    formatted_prompt = f"""
-    {persona_preamble}
-    
-    Conversation history:
-    {past_messages}
-    
-    User: {user_input}
-    AI:
-    """
-    
-    return formatted_prompt
+Past Context:
+{past_context}
+
+Current User Message: {user_input}
+
+Remember to:
+- Format your response with proper markdown
+- Use appropriate spacing and structure
+- Reference relevant past discussions
+- Keep the response focused and readable"""
 
