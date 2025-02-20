@@ -1,0 +1,96 @@
+[console_scripts]
+mistral-db-manage = mistral.db.sqlalchemy.migration.cli:main
+mistral-server = mistral.cmd.launch:main
+
+[kombu_driver.executors]
+blocking = futurist:SynchronousExecutor
+eventlet = futurist:GreenThreadPoolExecutor
+threading = futurist:ThreadPoolExecutor
+
+[mistral.action.providers]
+adhoc = mistral.actions.adhoc:AdHocActionProvider
+dynamic = mistral.actions.dynamic_action:DynamicActionProvider
+legacy = mistral.actions.legacy:LegacyActionProvider
+
+[mistral.actions]
+std.async_noop = mistral.actions.std_actions:AsyncNoOpAction
+std.echo = mistral.actions.std_actions:EchoAction
+std.email = mistral.actions.std_actions:SendEmailAction
+std.fail = mistral.actions.std_actions:FailAction
+std.http = mistral.actions.std_actions:HTTPAction
+std.javascript = mistral.actions.std_actions:JavaScriptAction
+std.js = mistral.actions.std_actions:JavaScriptAction
+std.mistral_http = mistral.actions.std_actions:MistralHTTPAction
+std.noop = mistral.actions.std_actions:NoOpAction
+std.sleep = mistral.actions.std_actions:SleepAction
+std.ssh = mistral.actions.std_actions:SSHAction
+std.ssh_proxied = mistral.actions.std_actions:SSHProxiedAction
+std.test_dict = mistral.actions.std_actions:TestDictAction
+
+[mistral.auth]
+keycloak-oidc = mistral.auth.keycloak:KeycloakAuthHandler
+keystone = mistral.auth.keystone:KeystoneAuthHandler
+
+[mistral.executors]
+local = mistral.executors.default_executor:DefaultExecutor
+remote = mistral.executors.remote_executor:RemoteExecutor
+
+[mistral.expression.evaluators]
+jinja = mistral.expressions.jinja_expression:InlineJinjaEvaluator
+yaql = mistral.expressions.yaql_expression:InlineYAQLEvaluator
+
+[mistral.expression.functions]
+env = mistral.expressions.std_functions:env_
+execution = mistral.expressions.std_functions:execution_
+executions = mistral.expressions.std_functions:executions_
+global = mistral.expressions.std_functions:global_
+json_dump = mistral.expressions.std_functions:json_dump_
+json_parse = mistral.expressions.std_functions:json_parse_
+json_pp = mistral.expressions.std_functions:json_pp_
+task = mistral.expressions.std_functions:task_
+tasks = mistral.expressions.std_functions:tasks_
+uuid = mistral.expressions.std_functions:uuid_
+yaml_dump = mistral.expressions.std_functions:yaml_dump_
+yaml_parse = mistral.expressions.std_functions:yaml_parse_
+
+[mistral.js.implementation]
+py_mini_racer = mistral.utils.javascript:PyMiniRacerEvaluator
+pyv8 = mistral.utils.javascript:PyV8Evaluator
+v8eval = mistral.utils.javascript:V8EvalEvaluator
+
+[mistral.notification.publishers]
+noop = mistral.notifiers.publishers.noop:NoopPublisher
+webhook = mistral.notifiers.publishers.webhook:WebhookPublisher
+
+[mistral.notifiers]
+local = mistral.notifiers.default_notifier:DefaultNotifier
+remote = mistral.notifiers.remote_notifier:RemoteNotifier
+
+[mistral.rpc.backends]
+kombu_client = mistral.rpc.kombu.kombu_client:KombuRPCClient
+kombu_server = mistral.rpc.kombu.kombu_server:KombuRPCServer
+oslo_client = mistral.rpc.oslo.oslo_client:OsloRPCClient
+oslo_server = mistral.rpc.oslo.oslo_server:OsloRPCServer
+
+[mistral.schedulers]
+default = mistral.scheduler.default_scheduler:DefaultScheduler
+legacy = mistral.services.legacy_scheduler:LegacyScheduler
+
+[oslo.config.opts]
+mistral.config = mistral.config:list_opts
+
+[oslo.config.opts.defaults]
+mistral.config = mistral.config:set_config_defaults
+
+[oslo.policy.enforcer]
+mistral = mistral.api.access_control:get_enforcer
+
+[oslo.policy.policies]
+mistral = mistral.policies:list_rules
+
+[pygments.lexers]
+mistral = mistral.ext.pygmentplugin:MistralLexer
+
+[wsgi_scripts]
+mistral-wsgi-api = mistral.api.app:init_wsgi
+

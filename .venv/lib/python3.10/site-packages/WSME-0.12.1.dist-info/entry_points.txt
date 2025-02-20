@@ -1,0 +1,4 @@
+[wsme.protocols]
+rest = wsme.rest.protocol:RestProtocol
+restjson = wsme.rest.protocol:RestProtocol
+restxml = wsme.rest.protocol:RestProtocol

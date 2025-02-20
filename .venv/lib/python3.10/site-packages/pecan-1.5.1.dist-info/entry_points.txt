@@ -1,0 +1,12 @@
+[console_scripts]
+gunicorn_pecan = pecan.commands.serve:gunicorn_run
+pecan = pecan.commands:CommandRunner.handle_command_line
+
+[pecan.command]
+create = pecan.commands:CreateCommand
+serve = pecan.commands:ServeCommand
+shell = pecan.commands:ShellCommand
+
+[pecan.scaffold]
+base = pecan.scaffolds:BaseScaffold
+rest-api = pecan.scaffolds:RestAPIScaffold

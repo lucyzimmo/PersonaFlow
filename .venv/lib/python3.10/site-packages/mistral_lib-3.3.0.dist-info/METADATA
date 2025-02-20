@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: mistral-lib
+Version: 3.3.0
+Summary: Mistral shared routings and utilities (Actions API, YAQL functions API, data types etc.)
+Home-page: https://docs.openstack.org/mistral/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+License-File: LICENSE
+License-File: AUTHORS
+Requires-Dist: oslo.log >=3.36.0
+Requires-Dist: pbr !=2.1.0,>=2.0.0
+Requires-Dist: oslo.serialization >=2.21.1
+Requires-Dist: yaql >=1.1.3
+
+========================
+Team and repository tags
+========================
+
+.. image:: http://governance.openstack.org/badges/mistral-lib.svg
+    :target: http://governance.openstack.org/reference/tags/index.html
+
+.. Change things from this point on
+
+===========
+mistral-lib
+===========
+
+This library contains data types, exceptions, functions and utilities common to
+Mistral, python-mistralclient and mistral-extra repositories. This library also
+contains the public interfaces for 3rd party integration (e.g. Actions API, YAQL
+functions API, etc.)
+
+If you want to use OpenStack in your custom actions or functions, you will also
+need to use https://opendev.org/openstack/mistral-extra.
+
+* Free software: Apache license
+* Documentation: https://docs.openstack.org/mistral/latest/
+* Source: https://opendev.org/openstack/mistral-lib
+* Bugs: https://bugs.launchpad.net/mistral
+* Release notes: https://docs.openstack.org/releasenotes/mistral-lib/
+
+Features
+--------
+
+* TODO
+
