@@ -34,6 +34,8 @@ except Exception as e:
 # Initialize Mistral client
 mistral_client = Mistral(api_key=MISTRAL_API_KEY)
 
+print(f"MISTRAL_API_KEY: {MISTRAL_API_KEY}")  # Debug log
+
 class ChatRequest(BaseModel):
     user_id: str
     persona: str
