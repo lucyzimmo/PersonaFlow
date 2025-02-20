@@ -5,23 +5,34 @@ from mistralai import Mistral
 from config import MISTRAL_API_KEY, EMBEDDING_MODEL, CHAT_MODEL
 
 MISTRAL_EMBEDDING_URL = "https://api.mistral.ai/v1/embeddings"
-
-# Initialize Mistral client
 client = Mistral(api_key=MISTRAL_API_KEY)
+
 
 def get_embedding(text: str) -> np.ndarray:
     """Get embedding vector for text using Mistral API."""
     try:
-        response = client.embeddings(
-            model=EMBEDDING_MODEL,
-            input=text
-        )
-        embedding = np.array(response.data[0].embedding)
-        print(f"Generated embedding shape: {embedding.shape}")  # Debug log
+        headers = {
+            "Authorization": f"Bearer {MISTRAL_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "input": [text],  
+            "model": EMBEDDING_MODEL,
+            "encoding_format": "float"
+        }
+
+        response = requests.post(MISTRAL_EMBEDDING_URL, json=payload, headers=headers)
+        response.raise_for_status()  # Raise error for bad status codes
+
+        embedding = np.array(response.json()["data"][0]["embedding"], dtype=np.float32)  # ✅ Ensure float32
+        print(f"✅ Generated embedding shape: {embedding.shape}")  
         return embedding
     except Exception as e:
-        print(f"Error getting embedding: {str(e)}")
+        print(f"❌ Error getting embedding: {str(e)}")
         raise
+
+
 
 def get_chat_response(messages: list) -> str:
     """Get chat completion from Mistral API."""

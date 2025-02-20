@@ -27,10 +27,10 @@ const PersonaSelector: React.FC<PersonaSelectorProps> = ({
       {personas.map((persona) => (
         <button
           key={persona}
-          className={`px-4 py-2 rounded-md ${
+          className={`px-4 py-2 rounded-md transition duration-300 ease-in-out ${
             selectedPersona === persona
-              ? "bg-blue-500 text-white"
-              : "bg-gray-200"
+              ? "bg-blue-500 text-white transform scale-105"
+              : "bg-gray-200 text-black hover:bg-blue-300"
           }`}
           onClick={() => onChange(persona)}
         >
@@ -41,11 +41,45 @@ const PersonaSelector: React.FC<PersonaSelectorProps> = ({
   );
 };
 
+// Add this interface at the top with other interfaces
+interface PersonaConfig {
+  placeholder: string;
+  bgColor: string;
+  buttonColor: string;
+}
+
+// Add this constant for persona-specific configurations
+const PERSONA_CONFIGS: Record<string, PersonaConfig> = {
+  research_assistant: {
+    placeholder: "Ask me about any topic you'd like to research...",
+    bgColor: "bg-blue-50",
+    buttonColor: "bg-blue-500 hover:bg-blue-600",
+  },
+  code_reviewer: {
+    placeholder: "Share your code for review or ask about best practices...",
+    bgColor: "bg-purple-50",
+    buttonColor: "bg-purple-500 hover:bg-purple-600",
+  },
+  product_manager: {
+    placeholder:
+      "Ask about product strategy, user needs, or market analysis...",
+    bgColor: "bg-green-50",
+    buttonColor: "bg-green-500 hover:bg-green-600",
+  },
+  ai_therapist: {
+    placeholder: "Share what's on your mind, I'm here to listen...",
+    bgColor: "bg-rose-50",
+    buttonColor: "bg-rose-500 hover:bg-rose-600",
+  },
+};
+
+// Update the ChatInterface component props
 interface ChatInterfaceProps {
   userInput: string;
   setUserInput: (input: string) => void;
   onSend: () => void;
   messages: Array<{ role: string; content: string }>;
+  selectedPersona: string;
 }
 
 // Chat Interface (React + Tailwind)
@@ -54,7 +88,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   setUserInput,
   onSend,
   messages,
+  selectedPersona,
 }) => {
+  const config = PERSONA_CONFIGS[selectedPersona];
+
   const highlightedContent = (content: string) => {
     const html = marked.parse(content, {
       breaks: true,
@@ -74,13 +111,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div
+      className={`flex flex-col h-screen ${config.bgColor} transition-colors duration-300`}
+    >
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`mb-4 ${
-              message.role === "user" ? "bg-blue-50" : "bg-white"
+              message.role === "user" ? "bg-white" : config.bgColor
             } rounded-lg p-4 shadow`}
           >
             <div className="font-bold mb-2">
@@ -95,17 +134,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </div>
         ))}
       </div>
-      <div className="p-4">
+      <div className="p-4 bg-white/50 backdrop-blur-sm">
         <input
           type="text"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Type your message..."
+          placeholder={config.placeholder}
           className="w-full p-2 border rounded-md"
+          onKeyPress={(e) => e.key === "Enter" && onSend()}
         />
         <button
           onClick={onSend}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+          className={`mt-2 px-4 py-2 text-white rounded-md transition-colors duration-300 ${config.buttonColor}`}
         >
           Send
         </button>
@@ -179,6 +219,7 @@ const App: React.FC = () => {
         setUserInput={setUserInput}
         onSend={handleSend}
         messages={messages}
+        selectedPersona={selectedPersona}
       />
     </div>
   );
