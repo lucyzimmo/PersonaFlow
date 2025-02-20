@@ -1,6 +1,6 @@
 # Project: PersonaFlow - Adaptive AI Chatbot
 
-## 📂 Folder Structure
+## Folder Structure
 
 ```
 PersonaFlow/
@@ -12,29 +12,26 @@ PersonaFlow/
 │   ├── embeddings.py       # Vector embeddings handler
 │   ├── requirements.txt    # Backend dependencies
 │── frontend/               # Next.js frontend application
-│   ├── components/         # Reusable React components
 │   ├── pages/              # Next.js pages
-│   ├── styles/             # TailwindCSS styles
-│   ├── api/                # API calls to backend
 │   ├── package.json        # Frontend dependencies
 │── README.md               # Project documentation
 │── .env                    # API keys & environment variables
 ```
 
-## 📝 README Template
+## README Template
 
 # PersonaFlow - Adaptive AI Chatbot
 
-** An intelligent, persona-driven chatbot powered by Mistral AI**
+** An intelligent, persona-driven chatbot powered by Mistral AI **
+Persona's include AI therapist, product manager, code reviewer, and research assistant.
 
-## 🚀 Features
+## Features
 
 - ** Multi-Persona AI**: Switch between different AI roles dynamically.
 - ** Memory & Adaptation**: AI learns from user interactions.
-- ** Hybrid Personas**: Merge multiple personas for cross-functional insights.
 - ** Fast & Scalable**: Powered by FastAPI, Next.js, and FAISS memory retrieval.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - ** Frontend**: Next.js (TypeScript), TailwindCSS
 - ** Backend**: FastAPI (Python)
@@ -42,36 +39,36 @@ PersonaFlow/
 - ** Memory**: FAISS + PostgreSQL
 - ** State Management**: Redis
 
-## 📦 Setup Instructions
+## Setup Instructions
 
-### 1️⃣ Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/your-repo/personaflow.git
 cd personaflow
 ```
 
-### 2️⃣ Install Backend Dependencies
+### Install Backend Dependencies
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Install Frontend Dependencies
+### Install Frontend Dependencies
 
 ```bash
 cd frontend
 npm install
 ```
 
-### 4️⃣ Run the Backend
+### Run the Backend
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### 5️⃣ Run the Frontend
+### Run the Frontend
 
 ```bash
 npm run dev
@@ -79,12 +76,11 @@ npm run dev
 
 ## 📌 API Endpoints
 
-| Method | Endpoint          | Description                    |
-| ------ | ----------------- | ------------------------------ |
-| `POST` | `/chat`           | Sends user message to AI       |
-| `GET`  | `/personas`       | Lists available personas       |
-| `POST` | `/set_persona`    | Switches to a specific persona |
-| `POST` | `/merge_personas` | Combines multiple personas     |
-| `GET`  | `/history`        | Retrieves past interactions    |
+| Method | Endpoint       | Description                    |
+| ------ | -------------- | ------------------------------ |
+| `POST` | `/chat`        | Sends user message to AI       |
+| `GET`  | `/personas`    | Lists available personas       |
+| `POST` | `/set_persona` | Switches to a specific persona |
+| `GET`  | `/history`     | Retrieves past interactions    |
 
 ---

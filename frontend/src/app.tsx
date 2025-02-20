@@ -23,18 +23,31 @@ const PersonaSelector: React.FC<PersonaSelectorProps> = ({
   ];
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex flex-wrap gap-3 mb-6">
       {personas.map((persona) => (
         <button
           key={persona}
-          className={`px-4 py-2 rounded-md transition duration-300 ease-in-out ${
-            selectedPersona === persona
-              ? "bg-blue-500 text-white transform scale-105"
-              : "bg-gray-200 text-black hover:bg-blue-300"
-          }`}
+          className={`px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-md 
+            ${
+              selectedPersona === persona
+                ? `bg-gradient-to-r ${PERSONA_CONFIGS[persona].gradient} scale-105 shadow-lg`
+                : "bg-white hover:shadow-lg"
+            }`}
           onClick={() => onChange(persona)}
         >
-          {persona.replace("_", " ")}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">{PERSONA_CONFIGS[persona].emoji}</span>
+            <span
+              className={`${
+                selectedPersona === persona ? "text-white" : "text-gray-700"
+              }`}
+            >
+              {persona
+                .split("_")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+            </span>
+          </div>
         </button>
       ))}
     </div>
@@ -46,6 +59,8 @@ interface PersonaConfig {
   placeholder: string;
   bgColor: string;
   buttonColor: string;
+  emoji: string;
+  gradient: string;
 }
 
 // Add this constant for persona-specific configurations
@@ -54,22 +69,30 @@ const PERSONA_CONFIGS: Record<string, PersonaConfig> = {
     placeholder: "Ask me about any topic you'd like to research...",
     bgColor: "bg-blue-50",
     buttonColor: "bg-blue-500 hover:bg-blue-600",
+    emoji: "🔬",
+    gradient: "from-blue-400 to-cyan-300",
   },
   code_reviewer: {
     placeholder: "Share your code for review or ask about best practices...",
     bgColor: "bg-purple-50",
     buttonColor: "bg-purple-500 hover:bg-purple-600",
+    emoji: "👨‍💻",
+    gradient: "from-purple-400 to-pink-300",
   },
   product_manager: {
     placeholder:
       "Ask about product strategy, user needs, or market analysis...",
     bgColor: "bg-green-50",
     buttonColor: "bg-green-500 hover:bg-green-600",
+    emoji: "📊",
+    gradient: "from-green-400 to-emerald-300",
   },
   ai_therapist: {
     placeholder: "Share what's on your mind, I'm here to listen...",
     bgColor: "bg-rose-50",
     buttonColor: "bg-rose-500 hover:bg-rose-600",
+    emoji: "🧘‍♀️",
+    gradient: "from-rose-400 to-orange-300",
   },
 };
 
@@ -112,21 +135,34 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   return (
     <div
-      className={`flex flex-col h-screen ${config.bgColor} transition-colors duration-300`}
+      className={`flex flex-col h-screen rounded-xl shadow-lg overflow-hidden ${config.bgColor} transition-colors duration-300`}
     >
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`mb-4 ${
-              message.role === "user" ? "bg-white" : config.bgColor
-            } rounded-lg p-4 shadow`}
+            className={`max-w-[80%] ${
+              message.role === "user"
+                ? "ml-auto bg-white"
+                : "mr-auto bg-gradient-to-r " + config.gradient
+            } rounded-2xl p-4 shadow-md animate-fadeIn`}
           >
-            <div className="font-bold mb-2">
-              {message.role === "user" ? "You:" : "AI:"}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xl">
+                {message.role === "user" ? "👤" : config.emoji}
+              </span>
+              <span
+                className={`font-medium ${
+                  message.role === "user" ? "" : "text-white"
+                }`}
+              >
+                {message.role === "user" ? "You" : "AI"}
+              </span>
             </div>
             <div
-              className="prose max-w-none"
+              className={`prose ${
+                message.role === "user" ? "" : "text-white"
+              } max-w-none`}
               dangerouslySetInnerHTML={{
                 __html: highlightedContent(message.content),
               }}
@@ -134,21 +170,23 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </div>
         ))}
       </div>
-      <div className="p-4 bg-white/50 backdrop-blur-sm">
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder={config.placeholder}
-          className="w-full p-2 border rounded-md"
-          onKeyPress={(e) => e.key === "Enter" && onSend()}
-        />
-        <button
-          onClick={onSend}
-          className={`mt-2 px-4 py-2 text-white rounded-md transition-colors duration-300 ${config.buttonColor}`}
-        >
-          Send
-        </button>
+      <div className="p-4 bg-white/80 backdrop-blur-sm border-t">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder={config.placeholder}
+            className="flex-1 p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-shadow duration-200"
+            onKeyPress={(e) => e.key === "Enter" && onSend()}
+          />
+          <button
+            onClick={onSend}
+            className={`px-6 py-3 rounded-xl text-white transition-all duration-300 transform hover:scale-105 ${config.buttonColor}`}
+          >
+            Send {config.emoji}
+          </button>
+        </div>
       </div>
     </div>
   );
