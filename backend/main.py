@@ -58,32 +58,25 @@ async def chat(request: ChatRequest):
         if not system_prompt:
             raise HTTPException(status_code=400, detail="Invalid persona selected")
 
-        # Construct messages
+        # Retrieve relevant memories
+        past_memories = retrieve_memory(request.user_id, request.message)
+        memories_str = "\n\n".join(past_memories) if past_memories else ""
+
+        # Construct messages with memory context
         messages = [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": f"{system_prompt}\n\nRelevant past interactions:\n{memories_str}"},
             {"role": "user", "content": request.message}
         ]
 
         # Get response from Mistral
         response = get_chat_response(messages)
         
-        # Store in memory if Redis is available
-        if redis_client:
-            try:
-                store_memory(request.user_id, request.message, response)
-                # Cache response
-                cache_key = f"chat:{request.user_id}:{request.message}"
-                redis_client.setex(
-                    cache_key,
-                    300,  # Cache for 5 minutes
-                    json.dumps(response)
-                )
-            except Exception as e:
-                print(f"Warning: Redis operations failed: {e}")
+        # Store the new interaction in memory
+        store_memory(request.user_id, request.message, response)
 
         return {"response": response}
     except Exception as e:
-        print(f"Error in chat endpoint: {str(e)}")  # Debug log
+        print(f"Error in chat endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":

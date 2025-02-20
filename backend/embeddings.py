@@ -1,41 +1,11 @@
 import os
-from mistralai import Mistral
+import requests
 import numpy as np
+from mistralai import Mistral
 from config import MISTRAL_API_KEY, EMBEDDING_MODEL, CHAT_MODEL
+
 MISTRAL_EMBEDDING_URL = "https://api.mistral.ai/v1/embeddings"
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 
-def get_embedding(texts):
-    """
-    Calls Mistral API to generate embeddings.
-    
-    Args:
-        texts (str or list of str): The text(s) to embed.
-
-    Returns:
-        List of embedding vectors.
-    """
-    if isinstance(texts, str):
-        texts = [texts]  # Convert single text to list
-
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "input": texts,
-        "model": "mistral-embed",  # Use Mistral's embedding model
-        "encoding_format": "float"
-    }
-
-    try:
-        response = requests.post(MISTRAL_EMBEDDING_URL, json=payload, headers=headers)
-        response.raise_for_status()  # Raise error if the request failed
-        return response.json()["data"]  # Extract embeddings
-    except requests.exceptions.RequestException as e:
-        print(f"Error getting embedding: {e}")
-        return None  # Handle failure gracefully
 # Initialize Mistral client
 client = Mistral(api_key=MISTRAL_API_KEY)
 
@@ -46,9 +16,11 @@ def get_embedding(text: str) -> np.ndarray:
             model=EMBEDDING_MODEL,
             input=text
         )
-        return np.array(response.data[0].embedding)
+        embedding = np.array(response.data[0].embedding)
+        print(f"Generated embedding shape: {embedding.shape}")  # Debug log
+        return embedding
     except Exception as e:
-        print(f"Error getting embedding: {e}")
+        print(f"Error getting embedding: {str(e)}")
         raise
 
 def get_chat_response(messages: list) -> str:
@@ -60,5 +32,5 @@ def get_chat_response(messages: list) -> str:
         )
         return chat_response.choices[0].message.content
     except Exception as e:
-        print(f"Error in get_chat_response: {str(e)}")  # Debug log
+        print(f"Error in get_chat_response: {str(e)}")
         raise Exception(f"Failed to get chat response: {str(e)}")
